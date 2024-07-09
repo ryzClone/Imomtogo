@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import Error from "./Components/Error";
+import LoginPage from "./Components/Pages/Loginpage";
+import Home from "./Components/Pages/Homepage";
+import Website from "./Components/Pages/Website";
+import Accepted from "./Components/Pages/Accepted";
+import Transferred from "./Components/Pages/Transferred";
+import Users from "./Components/Pages/Users";
 
-function App() {
+import "./style/app.css";
+import Referense from "./Components/Pages/Referense";
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/website" element={<Website />}>
+        <Route index element={<Home />} />
+        <Route path="/website/users" element={<Accepted />} />
+        <Route path="/website/catigories" element={<Transferred />} />
+        <Route path="/website/catigories-food" element={<Users />} />
+        <Route path="/website/ref" element={<Referense />} />
+        <Route path="*" element={<Error />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;
