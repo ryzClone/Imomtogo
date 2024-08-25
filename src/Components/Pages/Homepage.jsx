@@ -1,7 +1,11 @@
-export default function Home() {
+import React from "react";
+
+function Accepted() {
   return (
     <div>
-      <h1>Home</h1>
+      <h1>Accepted Page</h1>
     </div>
   );
 }
+
+export default Accepted;

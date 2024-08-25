@@ -1,7 +1,7 @@
-body {
-    margin: 0;
+.loginpage-main {
     font-family: 'Arial', sans-serif;
     display: flex;
+    width: 100vw;
     height: 100vh;
     align-items: center;
     justify-content: center;
@@ -47,10 +47,12 @@ body {
     width: 100%;
     margin-bottom: 20px;
 }
+
 .loginpage-form-body {
     width: 100%;
     padding: 0px 15%;
 }
+
 .form-group label {
     display: block;
     margin-bottom: 5px;
@@ -63,6 +65,10 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
 }
 
 .loginpage-form-body button {
