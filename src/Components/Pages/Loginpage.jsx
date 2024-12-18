@@ -11,11 +11,14 @@ export default function LoginPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const BACK_API = process.env.REACT_APP_BACK_API;
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch(`${BACK_API}api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,30 +29,33 @@ export default function LoginPage() {
         }),
       });
 
+      // Xatolik statusini tekshirish
       if (!response.ok) {
-        throw new Error("Username or password error");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Произошла ошибка");
       }
 
       const result = await response.json();
-      console.log(result); // Barcha ma'lumotlarni ko'rish
 
       const { token, username, role } = result.data;
 
+      // Token va boshqa ma'lumotlarni saqlash
       localStorage.setItem("token", token);
       localStorage.setItem("username", username);
       localStorage.setItem("role", role);
 
       setSuccess(true);
-      setText("Success");
+      setText("Успешный вход");
       setShowSuccess(true);
 
       setTimeout(() => {
         setShowSuccess(false);
+        // Sahifani qayta yo'naltirish
         window.location.pathname = "/website";
       }, 1000);
     } catch (error) {
       setSuccess(false);
-      setText(error.message || "An error occurred");
+      setText(error.message || "Произошла ошибка");
       setShowSuccess(true);
 
       setTimeout(() => {
@@ -57,7 +63,6 @@ export default function LoginPage() {
       }, 3000);
     }
 
-    setUsername("");
     setPassword("");
   };
 
@@ -74,11 +79,11 @@ export default function LoginPage() {
           <img src={LoginImg} alt="Login" />
         </div>
         <div className="loginpage-form">
-          <h2>Imom Togo proekti</h2>
+          <h2>Anorbank Обмен Устройств</h2> 
 
           <form onSubmit={handleSubmit} className="loginpage-form-body">
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username">Имя пользователя</label> {/* Tarjima: Foydalanuvchi nomi */}
               <input
                 type="text"
                 id="username"
@@ -89,7 +94,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Пароль</label> {/* Tarjima: Parol */}
               <input
                 type="password"
                 id="password"
@@ -99,7 +104,7 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <button type="submit">Login</button>
+            <button type="submit">Войти</button> {/* Tarjima: Kirish */}
           </form>
         </div>
         {renderSuccessMessage()}

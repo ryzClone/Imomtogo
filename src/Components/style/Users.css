@@ -110,7 +110,7 @@
 }
 
 .dropdown-menu {
-    width: 120px;
+    width: 140px;
     display: none;
     position: absolute;
     top: 100%;
@@ -197,8 +197,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
 /* edit toggle */
@@ -247,3 +250,97 @@
 .toggle-checkbox:checked+.toggle-label .slider {
     transform: translateX(26px);
 }
+
+
+/* Settings menu container */
+.settings_menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.settings_menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 0;
+}
+
+.settings_menu-icon {
+    font-size: 20px;
+    color: #1a1a3e;
+}
+
+/* Dropdown menu */
+.settings_dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    right: -29px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 120px;
+    z-index: 1;
+}
+
+.settings_dropdown-item {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.settings_dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* texnika menu-options */
+.menu-options {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .menu-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 90%;
+    right: -18.5px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    width: 250px;
+    min-width: 150px;
+    border-radius: 4px;
+    padding: 5px 0;
+  }
+  .dropdown-menu button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    transition: background-color 0.2s ease-in-out; /* Yumuq o'tish effekti */
+  }
+  
+  .dropdown-menu button:hover {
+    background-color: #f0f0f0; /* Tugma hover holatida fon rangi */
+    color: #333; /* Matn rangi, kerak bo'lsa o'zgartiring */
+  }
+  .menu-options .dropdown-menu {
+    display: block; /* React holati orqali ochiladi */
+  }
+  
+  

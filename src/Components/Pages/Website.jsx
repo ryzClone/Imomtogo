@@ -1,52 +1,76 @@
-// Website.js
 import React, { useEffect, useState, useContext } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import "../style/Website.css";
+import "../style/Website.css"; // CSS faylini import qilish
 import logo from "../../images/svg/logo.svg";
-import UsersIcon from "../../images/png/users.png";
-import Accepted from "../../images/png/accepted.png";
-import Transfers from "../../images/png/transfers.png";
-import { UserContext } from "./userContex";
+import { UserContext } from "./Users/userContex";
+import SeasonalEffect from "./seansonal/SeansonalEffect";
 
 function Website() {
   const navigate = useNavigate();
   const location = useLocation();
   const [display, setDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [texnikaDisplay, setTexnikaDisplay] = useState(""); 
 
   const pageTitleMap = {
-    users: "Users page",
-    transfers: "Transfers page",
-    "/website/editpassword": "Edit password ",
-    "/website": "Accepted page",
+    "/website": "Принятые устройства",
+    "/website/transfers": "Переданных устройств",
+    "/website/users": "Пользователи",
+    "/website/texnika": "Техника в рабочем состоянии", 
+    "/website/texnika/repair": "Техника в ремонте", 
+    "/website/texnika/unused": "Техника в списании",
+    "/website/editpassword": "Изменить пароль",
+    "/website/texnikachart": "Данные техники",
   };
 
   const username = localStorage.getItem("username");
   const role = localStorage.getItem("role");
 
   const title = Object.keys(pageTitleMap).find((key) =>
-    location.pathname.includes(key)
+    location.pathname === key
   );
+  const pageTitle = title ? pageTitleMap[title] : "Default Title";
 
   const { setSearch } = useContext(UserContext);
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      window.location.pathname = "/";
+    if (location.pathname.includes("/website/texnika")) {
+      if (location.pathname === "/website/texnika") {
+        setTexnikaDisplay("ish-holati");
+      } else if (location.pathname === "/website/texnika/repair") {
+        setTexnikaDisplay("remontda");
+      } else if (location.pathname === "/website/texnika/unused") {
+        setTexnikaDisplay("ishlatilma");
+      }
+    } else {
+      setTexnikaDisplay("");
     }
-  }, []);
 
-  useEffect(() => {
     const displayDoc = document.querySelector(".user-dropdown");
     if (displayDoc) {
       displayDoc.style.display = display ? "block" : "none";
     }
-  }, [display]);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      if (location.pathname !== "/") {
+        navigate("/"); 
+      }
+    } else {
+      const timer = setTimeout(() => {
+        localStorage.clear();
+        if (location.pathname !== "/") {
+          navigate("/"); 
+        }
+      }, 3600000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [navigate, location.pathname, display, searchTerm]);
 
   const handleLogout = () => {
     window.location.pathname = "/";
     localStorage.removeItem("token");
-    console.log("Logging out...");
   };
 
   const toggleDisplay = () => {
@@ -58,56 +82,90 @@ function Website() {
     setSearch(searchTerm);
   };
 
+  const handleTexnikaClick = (section) => {
+    if (texnikaDisplay === section) {
+      setTexnikaDisplay(""); 
+    } else {
+      setTexnikaDisplay(section); 
+    }
+  };
+
   return (
     <div className="website-container">
+
+      <SeasonalEffect season="spring"/>
+
       <header className="website-header">
         <div className="header-content">
           <div className="logo-container">
             <img src={logo} alt="Logo" className="logo" />
-            <div className="logo-container-text">Anorbank DevEX</div>
+            <div className="logo-container-text">Anorbank Обмен Устройств</div>
           </div>
           <nav className="website-nav">
             <ul className="nav-list">
               <li className="nav-item">
                 <Link
                   to="/website"
-                  className={`nav-link ${
-                    location.pathname === "/website" ? "active" : ""
-                  }`}
+                  className={`nav-link ${location.pathname === "/website" ? "active" : ""}`}
                 >
-                  <img
-                    src={Accepted}
-                    alt="Accepted Icon"
-                    className="nav-icon"
-                  />
-                  <p>Accepted</p>
+                  <i className="fas fa-check-circle nav-icon"></i>
+                  <p>Принятые</p>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
                   to="/website/transfers"
-                  className={`nav-link ${
-                    location.pathname === "/website/transfers" ? "active" : ""
-                  }`}
+                  className={`nav-link ${location.pathname === "/website/transfers" ? "active" : ""}`}
                 >
-                  <img
-                    src={Transfers}
-                    alt="Transfers Icon"
-                    className="nav-icon"
-                  />
-                  <p>Transfers</p>
+                  <i className="fas fa-exchange-alt nav-icon"></i>
+                  <p>Переданных</p>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
                   to="/website/users"
-                  className={`nav-link ${
-                    location.pathname === "/website/users" ? "active" : ""
-                  }`}
+                  className={`nav-link ${location.pathname === "/website/users" ? "active" : ""}`}
                 >
-                  <img src={UsersIcon} alt="Users Icon" className="nav-icon" />
-                  <p>Users</p>
+                  <i className="fas fa-users nav-icon"></i>
+                  <p>Пользователи</p>
                 </Link>
+              </li>
+              <li className="nav-item">
+                <div className="nav-link-container">
+                  <Link
+                    to="/website/texnikachart"
+                    className={`nav-link ${texnikaDisplay ? "active" : ""}`}
+                    onClick={() => setTexnikaDisplay(texnikaDisplay ? "" : "active")}
+                  >
+                    <i className="fas fa-cogs nav-icon"></i>
+                    <p>Техника</p>
+                  </Link>
+                  {texnikaDisplay && (
+                    <div className={`texnika-expandable ${texnikaDisplay ? "active" : ""}`}>
+                      <Link
+                        to="/website/texnika"
+                        className={`nav-link-tex ${location.pathname === "/website/texnika" ? "active" : ""}`}
+                        onClick={() => handleTexnikaClick("ish-holati")}
+                      >
+                        <i className="fas fa-sync-alt"></i> В эксплуатации
+                      </Link>
+                      <Link
+                        to="/website/texnika/repair"
+                        className={`nav-link-tex ${location.pathname === "/website/texnika/repair" ? "active" : ""}`}
+                        onClick={() => handleTexnikaClick("remontda")}
+                      >
+                        <i className="fas fa-tools"></i> В ремонте
+                      </Link>
+                      <Link
+                        to="/website/texnika/unused"
+                        className={`nav-link-tex ${location.pathname === "/website/texnika/unused" ? "active" : ""}`}
+                        onClick={() => handleTexnikaClick("ishlatilma")}
+                      >
+                        <i className="fas fa-ban"></i> В списании
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </li>
             </ul>
           </nav>
@@ -116,15 +174,13 @@ function Website() {
 
       <main className="website-content">
         <div className="section-content">
-          <div className="section-content-title">
-            {title ? pageTitleMap[title] : "Default Title"}
-          </div>
+          <div className="section-content-title">{pageTitle}</div>
           <div className="section-content-body">
             <form onSubmit={handleSubmit} className="section-content-body-form">
               <div className="search-container">
                 <input
                   type="text"
-                  placeholder="Search"
+                  placeholder="Поиск"
                   className="search-input"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -142,22 +198,18 @@ function Website() {
               <div className="user-dropdown">
                 <ul>
                   <li className="username">
-                    Username: <span>{username}</span>
+                    Имя: <span>{username}</span>
                   </li>
                   <li className="role">
-                    Role: <span>{role}</span>
+                    Роль: <span>{role}</span>
                   </li>
-                  <li
-                    onClick={() =>
-                      (window.location.pathname = "/website/editpassword")
-                    }
-                  >
+                  <li onClick={() => window.location.pathname = "/website/editpassword"}>
                     <i className="fas fa-key"></i>
-                    <span>Edit Password</span>
+                    <span>Изменить пароль</span>
                   </li>
                   <li onClick={handleLogout}>
                     <i className="fas fa-sign-out-alt"></i>
-                    <span>Log Out</span>
+                    <span>Выход</span>
                   </li>
                 </ul>
               </div>
